@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class CreditCard {
-    private String number;
-    private String pin;
+    private final String number;
+    private final String pin;
 
     public CreditCard() {
         ArrayList<Integer> cardNumbers = Generate(9);
@@ -68,9 +68,23 @@ public class CreditCard {
             return false;
         }
         CreditCard compared = (CreditCard) object;
-        if (this.number.equals(compared.getNumber()) && this.pin.equals(compared.getPin())) {
-            return true;
+        return this.number.equals(compared.getNumber()) && this.pin.equals(compared.getPin());
+    }
+
+    boolean luhnAlgorithmCheck(ArrayList<Integer> cardNumbers) {
+        ArrayList<Integer> checkNumber = new ArrayList<>();
+        int checkDigit = 0;
+        for (int i = 0; i < cardNumbers.size(); i++) {
+            if (i % 2 == 0) {
+                checkNumber.add(cardNumbers.get(i) * 2);
+            } else {
+                checkNumber.add(cardNumbers.get(i));
+            }
+            if (checkNumber.get(i) > 9) {
+                checkNumber.set(i, checkNumber.get(i) - 9);
+            }
+            checkDigit += checkNumber.get(i);
         }
-        return false;
+        return (checkDigit * 9) % 10 == 0;
     }
 }
